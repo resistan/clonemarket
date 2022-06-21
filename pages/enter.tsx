@@ -22,13 +22,13 @@ const Enter = () => {
 					</div>
 				</div>
 				<form className="flex flex-col mt-8">
-					<label className="text-sm font-medium text-gray-700">
+					<label htmlFor="input" className="text-sm font-medium text-gray-700">
 						{method === "email" ? "Email adress" : null}
 						{method === "phone" ? "Phone number" : null}
 					</label>
 					<div className="mt-1">
 						{method === "email" ? 
-							<input type="email" required placeholder="Email address"
+							<input id="input" type="email" required placeholder="Email address"
 								className="appearance-none w-full 
 								px-3 py-2 
 								border-gray-300 rounded-md shadow-sm 
@@ -39,7 +39,7 @@ const Enter = () => {
 						{method === "phone" ? (
 							<div className="flex rounded-md shadow-sm">
 								<span className="flex items-center justify-center px-3 rounded-sm rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm select-none">+82</span>
-								<input type="number" required
+								<input id="input" type="number" required
 									className="appearance-none w-full
 									px-3 py-2 
 									border-gray-300 rounded-md shadow-sm rounded-r-md rounded-l-none
