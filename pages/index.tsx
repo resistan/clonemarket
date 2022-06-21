@@ -2,8 +2,8 @@ import tw from "tailwind-styled-components";
 import { NextPage } from "next"
 import Head from "next/head";
 
-const Wrapper = tw.div`bg-slate-400 py-20 px-10 grid gap-10 min-h-screen`;
-const Box = tw.div`bg-white p-6 rounded-2xl shadow-xl`;
+const Wrapper = tw.div`bg-slate-400 dark:bg-black py-20 px-10 grid gap-10 min-h-screen`;
+const Box = tw.div`bg-white dark:bg-slate-200 p-6 rounded-2xl shadow-xl dark:shadow-cyan-900`;
 const BoxTitle = tw.h4`font-semibold text-2xl`;
 const Pricing = tw.li`flex justify-between mb-2`;
 const Item = tw.span`text-gray-500`;
