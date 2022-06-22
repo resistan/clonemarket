@@ -1,11 +1,11 @@
 import type { NextPage } from "next";
 import React, { useState } from "react";
-import Button from "../components/button";
-import Input from "../components/input";
-import Seo from "../components/seo";
+import Button from "@components/button";
+import Input from "@components/input";
+import Seo from "@components/seo";
 import { useForm } from "react-hook-form";
-import { cls } from "../libs/client/utils";
-import useMutation from "../libs/client/useMutation";
+import { cls } from "@libs/client/utils";
+import useMutation from "@libs/client/useMutation";
 
 // validation
 // better errors(set, clear, display)
