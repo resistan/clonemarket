@@ -26,6 +26,7 @@ const Home: NextPage = () => {
             stroke="currentColor"
             aria-hidden="true"
           >
+            <title>상품 등록하기</title>
             <path
               strokeLinecap="round"
               strokeLinejoin="round"

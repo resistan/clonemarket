@@ -25,6 +25,7 @@ const Live: NextPage = () => {
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
           >
+            <title>라이브 시작</title>
             <path
               strokeLinecap="round"
               strokeLinejoin="round"

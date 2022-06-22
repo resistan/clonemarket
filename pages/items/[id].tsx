@@ -41,6 +41,7 @@ const ItemDetail: NextPage = () => {
                   stroke="currentColor"
                   aria-hidden="true"
                 >
+                  <title>관심 목록에 추가</title>
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"

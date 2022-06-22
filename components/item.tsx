@@ -34,6 +34,7 @@ export default function Item({
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
+              <title>관심</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -51,6 +52,7 @@ export default function Item({
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
+              <title>댓글</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
