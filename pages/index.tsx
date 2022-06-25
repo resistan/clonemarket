@@ -4,24 +4,34 @@ import Item from "@components/item";
 import Layout from "@components/layout";
 import useUser from "@libs/client/useUser";
 import Seo from "@components/seo";
+import useSWR from "swr";
+import { Product } from "@prisma/client";
+
+interface IProductResponse {
+  ok: boolean;
+  products: Product[];
+}
 
 const Home: NextPage = () => {
   const {user, isLoading} = useUser();
-  const pageTitle = "Home";
+  const { data } = useSWR<IProductResponse>("/api/products")
+  // console.log(data)
   return (
     <Layout title="홈" hasTabBar>
-      <Seo title={pageTitle}/>
       <div className="flex flex-col space-y-5 divide-y">
-        {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((_, i) => (
-          <Item
-            id={i}
-            key={i}
-            title="iPhone 14"
-            price={99}
-            comments={1}
-            hearts={1}
-          />
-        ))}
+        {data ?
+          data?.products?.map((product) => (
+            <Item
+              id={product.id}
+              key={product.id}
+              title={product.name}
+              price={product.price}
+              comments={1}
+              hearts={1}
+            />
+          ))
+        : <p>Loading...</p>
+        }
         <FloatingButton href="/products/upload">
           <svg
             className="h-6 w-6"

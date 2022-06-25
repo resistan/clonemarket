@@ -5,15 +5,17 @@ export interface IResponseType {
 	[key: string]: any;
 }
 
+type method = "GET"|"POST"|"DELETE";
+
 interface IConfig {
-	method:"GET"|"POST"|"DELETE";
+	methods: method[];
 	fn: (req:NextApiRequest, res:NextApiResponse) => void;
 	isPrivate?: boolean;
 }
 
-export default function withHandler({method, isPrivate = true, fn}: IConfig) {
+export default function withHandler({methods, isPrivate = true, fn}: IConfig) {
 	return async function(req:NextApiRequest, res:NextApiResponse) : Promise<any> {
-		if(req.method !== method) {
+		if(req.method && !methods.includes(req.method as any)) {
 			res.status(405).end();
 		}
 		if(isPrivate && !req.session.user) {
