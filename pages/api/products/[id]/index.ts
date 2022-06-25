@@ -6,7 +6,7 @@ import { withApiSession } from "@libs/server/withSession";
 async function handler(
 	req:NextApiRequest, res:NextApiResponse<IResponseType>
 ){
-	const { id } = req.query;
+	const { query: {id}, session: {user} } = req;
 	const product = await client.product.findUnique({
 		where: { id: +id },
 		include: { user: {
@@ -34,15 +34,24 @@ async function handler(
 			}
 		}
 	})
+	const isLiked = Boolean(await client.likes.findFirst({
+		where: {
+			productId: product?.id,
+			userId: user?.id
+		},
+		select: {
+			id: true
+		}
+	}));
 	res.json({
 		ok: true,
 		product,
+		isLiked,
 		relatedProducts
 	})
 }
 
 export default withApiSession(withHandler({
 	methods: ["GET"],
-	fn: handler,
-	isPrivate: true
+	fn: handler
 }));

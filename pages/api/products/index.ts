@@ -7,7 +7,15 @@ async function handler(
 	req:NextApiRequest, res:NextApiResponse<IResponseType>
 ){
 	if(req.method === "GET") {
-		const products = await client.product.findMany({});
+		const products = await client.product.findMany({
+			include: {
+				_count: {
+					select: {
+						likes: true
+					}
+				}
+			}
+		});
 		res.json({
 			ok: true,
 			products

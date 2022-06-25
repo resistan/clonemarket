@@ -7,9 +7,14 @@ import Seo from "@components/seo";
 import useSWR from "swr";
 import { Product } from "@prisma/client";
 
+interface IProductList extends Product {
+  _count: {
+    likes: number;
+  }
+}
 interface IProductResponse {
   ok: boolean;
-  products: Product[];
+  products: IProductList[];
 }
 
 const Home: NextPage = () => {
@@ -27,7 +32,7 @@ const Home: NextPage = () => {
               title={product.name}
               price={product.price}
               comments={1}
-              hearts={1}
+              hearts={product._count.likes}
             />
           ))
         : <p>Loading...</p>
