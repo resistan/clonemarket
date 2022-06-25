@@ -1,28 +1,34 @@
 import type { NextPage } from "next";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@components/button";
 import Input from "@components/input";
 import Seo from "@components/seo";
 import { useForm } from "react-hook-form";
 import { cls } from "@libs/client/utils";
 import useMutation from "@libs/client/useMutation";
+import { useRouter } from "next/router";
 
 // validation
 // better errors(set, clear, display)
 
-interface IUser {
+interface IEnterInfo {
   email?: string;
   phone?: string;
 }
-
+interface IMutationResult {
+  ok: boolean;
+}
+interface ITokenForm {
+  token: string;
+}
 
 const Enter: NextPage = () => {
-  const [enter, {loading, data, error}] = useMutation("/api/users/enter");
+  const [enter, {loading, data, error}] = useMutation<IMutationResult>("/api/users/enter");
+  const [confirmToken, {loading:tokenLoading, data:tokenData, error:tokenError}] = useMutation<IMutationResult>("/api/users/confirm");
   const pageTitle = "Enter to Carrot";
   const [submitting, setSubmitting] = useState(false);
-  const { register, reset, handleSubmit, formState: { errors }, setError } = useForm<IUser>({
-		defaultValues: {}
-	});
+  const { register, reset, handleSubmit } = useForm<IEnterInfo>();
+  const { register:tokenRegister, handleSubmit:tokenSubmit } = useForm<ITokenForm>();
   const [method, setMethod] = useState<"email" | "phone">("email");
   const onEmailClick = () => {
     reset();
@@ -32,13 +38,25 @@ const Enter: NextPage = () => {
     reset();
     setMethod("phone");
   }
-  const onValid = (data: IUser) => {
-    enter(data);
-    console.log(loading, data, error)
+  const onValid = (validForm: IEnterInfo) => {
+    if(loading) return;
+    enter(validForm);
+    // console.log(loading, data, error)
 	}
 	const onInValid = (data: any) => {
 		// console.log(data)
 	}
+  const onTokenValid = (validForm: ITokenForm) => {
+    if(tokenLoading) return;
+    confirmToken(validForm);
+	}
+
+  const router = useRouter();
+  useEffect(() => {
+    if(tokenData?.ok) {
+      router.push("/");
+    }
+  }, [tokenData, router]);
   // console.log(watch())
   return (
     <>
@@ -73,33 +91,51 @@ const Enter: NextPage = () => {
               </button>
             </div>
           </div>
-          <form onSubmit={handleSubmit(onValid, onInValid)} className="flex flex-col mt-8 space-y-4">
-            {method === "email" ? (
-              <Input
-                register={register("email", {
-                  required: true
-                })}
-                name="email" label="Email address" type="email" required
-              />
-            ) : null}
-            {method === "phone" ? (
-              <Input
-                register={register("phone", {
-                  required: true
-                })}
-                name="phone"
-                label="Phone number"
-                type="number"
-                kind="phone"
-                required
-              />
-            ) : null}
-            {method === "email" ? <Button text={submitting? "Loading" : "Get login link"} /> : null}
-            {method === "phone" ? (
-              <Button text={submitting? "Loading" : "Get one-time password"} />
-            ) : null}
-          </form>
-
+          {data?.ok ?
+            <>
+              <form onSubmit={tokenSubmit(onTokenValid)} className="flex flex-col mt-8 space-y-4">
+                <Input
+                  register={tokenRegister("token", {
+                    required: true
+                  })}
+                  name="token"
+                  label="Confirmation TOKEN"
+                  type="number"
+                  required
+                />
+                <Button text={submitting? "Loading Token Loading" : "Confirm Token"} />
+              </form>
+            </>
+          :
+            <>
+              <form onSubmit={handleSubmit(onValid, onInValid)} className="flex flex-col mt-8 space-y-4">
+                {method === "email" ? (
+                  <Input
+                    register={register("email", {
+                      required: true
+                    })}
+                    name="email" label="Email address" type="email" required
+                  />
+                ) : null}
+                {method === "phone" ? (
+                  <Input
+                    register={register("phone", {
+                      required: true
+                    })}
+                    name="phone"
+                    label="Phone number"
+                    type="number"
+                    kind="phone"
+                    required
+                  />
+                ) : null}
+                {method === "email" ? <Button text={submitting? "Loading" : "Get login link"} /> : null}
+                {method === "phone" ? (
+                  <Button text={submitting? "Loading" : "Get one-time password"} />
+                ) : null}
+              </form>
+            </>
+          }
           <div className="mt-8">
             <div className="relative">
               <div className="absolute w-full border-t border-gray-300" />

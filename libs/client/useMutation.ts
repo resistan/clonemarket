@@ -1,14 +1,14 @@
 import { useState } from "react";
 
-interface ImutationState {
+interface ImutationState<T> {
 	loading: boolean;
-	data?: object;
+	data?: T;
 	error?: object;
 }
-type UseMutationResult = [(data?:any) => void, ImutationState];
+type UseMutationResult<T> = [(data?:any) => void, ImutationState<T>];
 
-export default function useMutation(url:string):UseMutationResult {
-	const [state, setState] = useState({
+export default function useMutation<T = any>(url:string):UseMutationResult<T> {
+	const [state, setState] = useState<ImutationState<T>>({
 		loading: false,
 		data: undefined,
 		error: undefined
@@ -23,9 +23,9 @@ export default function useMutation(url:string):UseMutationResult {
 			body: JSON.stringify(data),
 		})
 		.then( (response) => response.json().catch( () => {} ) )
-		.then( (json) => setState({...state, data: json }) ) // .then( (json) => setData(json))
-		.catch( (error) => setState({...state, error } )) // .catch((error) => setError(error))
-		.finally( () => setState({...state, loading:false }) );
+		.then( (json) => setState( (state) => ({...state, data: json }) ) ) // .then( (json) => setData(json))
+		.catch( (error) => setState( (state) => ({...state, error }) )) // .catch((error) => setError(error))
+		.finally( () => setState( (state) => ({...state, loading:false }) ) );
 	}
 	return [mutation, state];
 }
