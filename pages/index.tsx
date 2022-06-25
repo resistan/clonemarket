@@ -6,7 +6,7 @@ import useUser from "@libs/client/useUser";
 import Seo from "@components/seo";
 
 const Home: NextPage = () => {
-  const user = useUser();
+  const {user, isLoading} = useUser();
   const pageTitle = "Home";
   return (
     <Layout title="홈" hasTabBar>
