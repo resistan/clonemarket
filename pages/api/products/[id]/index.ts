@@ -8,15 +8,17 @@ async function handler(
 ){
 	const { query: {id}, session: {user} } = req;
 	const product = await client.product.findUnique({
-		where: { id: +id },
-		include: { user: {
-			select: {
-				id: true,
-				name: true,
-				avatar: true,
-			}
-		}}
-	});
+    where: { id: +id.toString() },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          avatar: true,
+        },
+      },
+    },
+  });
 	// console.log(product)
 	const terms = product?.name.split(" ").map( (word) => ({
 		name: {

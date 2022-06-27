@@ -8,11 +8,11 @@ async function handler(
 ){
 	const { query: { id }, session: { user } } = req;
 	const alreadyExists = await client.likes.findFirst({
-		where: {
-			productId: +id,
-			userId: user?.id,
-		}
-	});
+    where: {
+      productid: +id.toString(),
+      userId: user?.id,
+    },
+  });
 	if(alreadyExists) {
 		// delete -- need id
 		await client.likes.delete({
@@ -29,19 +29,19 @@ async function handler(
 	} else {
 		// create
 		await client.likes.create({
-			data: {
-				user: {
-					connect: {
-						id: user?.id,
-					}
-				},
-				product: {
-					connect: {
-						id: +id,
-					}
-				}
-			}
-		});
+      data: {
+        user: {
+          connect: {
+            id: user?.id,
+          },
+        },
+        product: {
+          connect: {
+            id: +id.toString(),
+          },
+        },
+      },
+    });
 	}
 	res.json({
 		ok: true,
