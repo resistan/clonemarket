@@ -8,8 +8,9 @@ async function handler(
   res: NextApiResponse<IResponseType>
 ) {
   const {
-    query: { id },
+    body: { answer },
     session: { user },
+    query: { id },
   } = req;
   const post = await client.post.findUnique({
     where: { id: +id.toString() },
@@ -20,39 +21,24 @@ async function handler(
       error: "not found",
     });
   }
-  const alreadyExists = await client.wondering.findFirst({
-    where: {
-      postId: +id.toString(),
-      userId: user?.id,
+  const newAnswer = await client.answer.create({
+    data: {
+      answer,
+      post: {
+        connect: {
+          id: +id.toString(),
+        },
+      },
+      user: {
+        connect: {
+          id: user?.id,
+        },
+      },
     },
   });
-  if (alreadyExists) {
-    await client.wondering.delete({
-      where: {
-        id: alreadyExists.id,
-      },
-      select: {
-        id: true,
-      },
-    });
-  } else {
-    await client.wondering.create({
-      data: {
-        user: {
-          connect: {
-            id: user?.id,
-          },
-        },
-        post: {
-          connect: {
-            id: +id.toString(),
-          },
-        },
-      },
-    });
-  }
-  res.json({
+  res.status(200).json({
     ok: true,
+    answer: newAnswer,
   });
 }
 
@@ -60,5 +46,6 @@ export default withApiSession(
   withHandler({
     methods: ["POST"],
     fn: handler,
+    isPrivate: true,
   })
 );

@@ -4,23 +4,24 @@ import FloatingButton from "@components/floating-button";
 import Layout from "@components/layout";
 import useUser from "@libs/client/useUser";
 import useSWR from "swr";
-import { Post } from "@prisma/client";
+import { Post, User } from "@prisma/client";
 
 interface IPostList extends Post {
+  user: User;
   _count: {
-    wondering: number;
+    wonderings: number;
     answers: number;
   };
 }
 interface IPostResponse {
   ok: boolean;
-  products: IPostList[];
+  posts: IPostList[];
 }
 
 const Community: NextPage = () => {
   const { user, isLoading } = useUser();
-  const { data } = useSWR("/api/posts");
-  console.log(data);
+  const { data } = useSWR<IPostResponse>("/api/posts");
+  // console.log(data);
   return (
     <Layout hasTabBar title="동네생활">
       <div className="space-y-4 divide-y-[2px]">
@@ -97,6 +98,6 @@ const Community: NextPage = () => {
       </div>
     </Layout>
   );
-};
+};;;;;;
 
 export default Community;

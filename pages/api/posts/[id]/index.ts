@@ -42,7 +42,12 @@ async function handler(
       },
     },
   });
-
+  if (!post) {
+    res.json({
+      ok: false,
+      error: "404",
+    });
+  }
   const isWonder = Boolean(
     await client.wondering.findFirst({
       where: {
@@ -54,18 +59,11 @@ async function handler(
       },
     })
   );
-  if (post) {
-    res.json({
-      ok: true,
-      post,
-      isWonder,
-    });
-  } else {
-    res.json({
-      ok: false,
-      error: "404",
-    });
-  }
+  res.json({
+    ok: true,
+    post,
+    isWonder,
+  });
 }
 
 export default withApiSession(

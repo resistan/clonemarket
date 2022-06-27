@@ -13,6 +13,15 @@ async function handler(
       userId: user?.id,
     },
   });
+	const product = await client.product.findUnique({
+    where: { id: +id.toString() },
+  });
+  if (!product) {
+    res.json({
+      ok: false,
+      error: "not found",
+    });
+  }
 	if(alreadyExists) {
 		// delete -- need id
 		await client.likes.delete({
