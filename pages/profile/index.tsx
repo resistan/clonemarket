@@ -1,8 +1,23 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import Layout from "@components/layout";
+import useMutation from "@libs/client/useMutation";
+import useUser from "@libs/client/useUser";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const Profile: NextPage = () => {
+  const { user, isLoading } = useUser();
+  const router = useRouter();
+  const [ logoff, {data} ] = useMutation("/api/users/logout");
+  const onLogOut = () => {
+    logoff({});
+  }
+  useEffect(() => {
+    if(data?.ok) {
+      router.push("/");
+    }
+  }, [data, router]);
   return (
     <Layout hasTabBar title="나의 캐럿">
       <div className="px-4">
@@ -13,6 +28,7 @@ const Profile: NextPage = () => {
             <Link href="/profile/edit">
               <a className="text-sm text-gray-700">Edit profile &rarr;</a>
             </Link>
+            <button onClick={onLogOut}>Log out</button>
           </div>
         </div>
         <div className="mt-10 flex justify-around">

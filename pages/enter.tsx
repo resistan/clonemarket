@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { cls } from "@libs/client/utils";
 import useMutation from "@libs/client/useMutation";
 import { useRouter } from "next/router";
+import useUser from "@libs/client/useUser";
 
 // validation
 // better errors(set, clear, display)
@@ -23,6 +24,8 @@ interface ITokenForm {
 }
 
 const Enter: NextPage = () => {
+  const {user, isLoading} = useUser();
+  const router = useRouter();
   const [enter, {loading, data, error}] = useMutation<IMutationResult>("/api/users/enter");
   const [confirmToken, {loading:tokenLoading, data:tokenData, error:tokenError}] = useMutation<IMutationResult>("/api/users/confirm");
   const pageTitle = "Enter to Carrot";
@@ -30,6 +33,9 @@ const Enter: NextPage = () => {
   const { register, reset, handleSubmit } = useForm<IEnterInfo>();
   const { register:tokenRegister, handleSubmit:tokenSubmit } = useForm<ITokenForm>();
   const [method, setMethod] = useState<"email" | "phone">("email");
+
+  if(user) router.replace("/");
+
   const onEmailClick = () => {
     reset();
     setMethod("email");
@@ -51,7 +57,6 @@ const Enter: NextPage = () => {
     confirmToken(validForm);
 	}
 
-  const router = useRouter();
   useEffect(() => {
     if(tokenData?.ok) {
       router.push("/");
