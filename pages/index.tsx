@@ -6,10 +6,10 @@ import useUser from "@libs/client/useUser";
 import useSWR from "swr";
 import { Product } from "@prisma/client";
 
-interface IProductList extends Product {
+export interface IProductList extends Product {
   _count: {
     likes: number;
-  }
+  };
 }
 interface IProductResponse {
   ok: boolean;

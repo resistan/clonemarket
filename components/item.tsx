@@ -44,7 +44,7 @@ export default function Item({
             </svg>
             <span>{hearts}</span>
           </div>
-          <div className="flex space-x-0.5 items-center text-sm  text-gray-600">
+          {/* <div className="flex space-x-0.5 items-center text-sm  text-gray-600">
             <svg
               className="w-4 h-4"
               fill="none"
@@ -61,7 +61,7 @@ export default function Item({
               ></path>
             </svg>
             <span>{comments}</span>
-          </div>
+          </div> */}
         </div>
       </a>
     </Link>
