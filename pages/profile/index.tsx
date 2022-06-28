@@ -9,26 +9,28 @@ import { useRouter } from "next/router";
 const Profile: NextPage = () => {
   const { user, isLoading } = useUser();
   const router = useRouter();
-  const [ logoff, {data} ] = useMutation("/api/users/logout");
-  const onLogOut = () => {
+  const [logoff, { data: loggedInData }] = useMutation("/api/users/logout");
+  const onLogoutClick = () => {
     logoff({});
-  }
+  };
   useEffect(() => {
-    if(data?.ok) {
+    if (loggedInData?.ok) {
       router.push("/");
     }
-  }, [data, router]);
+  }, [loggedInData, router]);
   return (
     <Layout hasTabBar title="나의 캐럿">
       <div className="px-4">
         <div className="flex items-center mt-4 space-x-3">
           <div className="w-16 h-16 bg-slate-500 rounded-full" />
           <div className="flex flex-col">
-            <span className="font-medium text-gray-900">Steve Jebs</span>
+            <span className="font-medium text-gray-900">
+              {user && user.name} {user && user.isAdmin && "(관리자)"}
+              <button onClick={onLogoutClick}>Log out</button>
+            </span>
             <Link href="/profile/edit">
               <a className="text-sm text-gray-700">Edit profile &rarr;</a>
             </Link>
-            <button onClick={onLogOut}>Log out</button>
           </div>
         </div>
         <div className="mt-10 flex justify-around">

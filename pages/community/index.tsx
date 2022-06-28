@@ -26,7 +26,7 @@ const Community: NextPage = () => {
   const { data } = useSWR<IPostResponse>(
     latitude && longitude
       ? `/api/posts/?latitude=${latitude}&longitude=${longitude}`
-      : null
+      : "/api/posts/"
   );
   // console.log(data);
   return (

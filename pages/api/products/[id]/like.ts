@@ -9,7 +9,7 @@ async function handler(
 	const { query: { id }, session: { user } } = req;
 	const alreadyExists = await client.likes.findFirst({
     where: {
-      productid: +id.toString(),
+      productId: +id.toString(),
       userId: user?.id,
     },
   });
