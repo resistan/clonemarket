@@ -26,8 +26,10 @@ const EditProfile: NextPage = () => {
     handleSubmit,
     setError,
     formState: { errors },
+    clearErrors,
   } = useForm<IEditProfile>();
   useEffect(() => {
+    // client side
     if (user?.email) setValue("email", user.email);
     if (user?.phone) setValue("phone", user.phone);
     if (user?.name && user?.name !== "Anonymous") setValue("name", user.name);
@@ -46,6 +48,7 @@ const EditProfile: NextPage = () => {
     editProfile({ name, email, phone });
   };
   useEffect(() => {
+    // server side
     if (data && !data.ok) {
       setError("formErrors", {
         message: data.error,
@@ -97,7 +100,10 @@ const EditProfile: NextPage = () => {
             {errors.formErrors.message}
           </p>
         ) : null}
-        <Button text={loading ? "Loading..." : "Update profile"} />
+        <Button
+          onClick={() => clearErrors()}
+          text={loading ? "Loading..." : "Update profile"}
+        />
       </form>
     </Layout>
   );
