@@ -17,7 +17,7 @@ interface IProductResponse {
 }
 
 const Home: NextPage = () => {
-  const {user, isLoading} = useUser();
+  const { user, isLoading } = useUser();
   const { data } = useSWR<IProductResponse>("/api/products")
   // console.log(data)
   return (

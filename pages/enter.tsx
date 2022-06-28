@@ -24,7 +24,7 @@ interface ITokenForm {
 }
 
 const Enter: NextPage = () => {
-  const {user, isLoading} = useUser();
+  const { user, isLoading } = useUser();
   const router = useRouter();
   const [enter, {loading, data, error}] = useMutation<IMutationResult>("/api/users/enter");
   const [confirmToken, {loading:tokenLoading, data:tokenData, error:tokenError}] = useMutation<IMutationResult>("/api/users/confirm");
