@@ -4,27 +4,45 @@ import FloatingButton from "@components/floating-button";
 import Layout from "@components/layout";
 import useSWR from "swr";
 import { Stream } from "@prisma/client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import PageNav from "@components/paginav";
 
 interface IStreamListResponse {
   ok: boolean;
   streams: Stream[];
+  maxPage: number;
 }
 
 const Live: NextPage = () => {
-  const { data } = useSWR<IStreamListResponse>("/api/streams");
+  const router = useRouter();
+  const { page: callPage } = router.query;
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    if (callPage) setPage(callPage ? +callPage : 1);
+  }, [callPage]);
+  const { data } = useSWR<IStreamListResponse>(`/api/streams?page=${page}`);
+  // console.log(data?.maxPage);
   return (
     <Layout hasTabBar title="라이브">
       <div className=" divide-y-[1px] space-y-4">
-        {data?.streams.map((stream) => (
-          <Link key={stream.id} href={`/streams/${stream.id}`}>
-            <a className="pt-4 block  px-4">
-              <div className="w-full rounded-md shadow-sm bg-slate-300 aspect-video" />
-              <h1 className="text-2xl mt-2 font-bold text-gray-900">
-                {stream.name}
-              </h1>
-            </a>
-          </Link>
-        ))}
+        {data?.streams ? (
+          <>
+            {data?.streams.map((stream) => (
+              <Link key={stream.id} href={`/streams/${stream.id}`}>
+                <a className="pt-4 block  px-4">
+                  <div className="w-full rounded-md shadow-sm bg-slate-300 aspect-video" />
+                  <h1 className="text-2xl mt-2 font-bold text-gray-900">
+                    {stream.name}
+                  </h1>
+                </a>
+              </Link>
+            ))}
+            <PageNav maxData={data?.maxPage} currentPage={page} />
+          </>
+        ) : (
+          <p>Data not found</p>
+        )}
         <FloatingButton href="/streams/create">
           <svg
             className="w-6 h-6"
@@ -45,6 +63,6 @@ const Live: NextPage = () => {
       </div>
     </Layout>
   );
-};
+};;;;
 
 export default Live;

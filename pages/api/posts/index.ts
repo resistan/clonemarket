@@ -49,6 +49,8 @@ async function handler(
       };
     }
     const posts = await client.post.findMany({
+      take: 10,
+      skip: 0,
       include: {
         user: {
           select: {

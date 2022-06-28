@@ -8,10 +8,24 @@ async function handler(
   res: NextApiResponse<IResponseType>
 ) {
   if (req.method === "GET") {
-    const streams = await client.stream.findMany({});
+    const {
+      query: { page },
+    } = req;
+    const pageSize = 10;
+    const currentPage = +page - 1;
+    const totalRecord = await client.stream.count();
+    const maxPage = Math.ceil(totalRecord / pageSize);
+    const streams = await client.stream.findMany({
+      take: 10,
+      skip: currentPage * pageSize,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
     res.json({
       ok: true,
       streams,
+      maxPage,
     });
   }
   if (req.method === "POST") {
