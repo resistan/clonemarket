@@ -9,35 +9,30 @@ async function handler(
 ) {
   const {
     query: { id },
+    body,
     session: { user },
   } = req;
-  const stream = await client.stream.findUnique({
-    where: { id: +id.toString() },
-    include: {
+  const message = await client.message.create({
+    data: {
+      message: body.message,
+      stream: {
+        connect: {
+          id: +id.toString(),
+        },
+      },
       user: {
-        select: {
-          id: true,
-          name: true,
-          avatar: true,
+        connect: {
+          id: user?.id,
         },
       },
     },
-  });
-  if (!stream) {
-    res.json({
-      ok: false,
-      error: "404",
-    });
-  }
-  res.json({
-    ok: true,
-    stream,
   });
 }
 
 export default withApiSession(
   withHandler({
-    methods: ["GET"],
+    methods: ["POST"],
     fn: handler,
+    isPrivate: true,
   })
 );

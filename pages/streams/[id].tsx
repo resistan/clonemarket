@@ -1,20 +1,70 @@
 import type { NextPage } from "next";
 import Layout from "@components/layout";
-import Message from "@components/message";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 import { Stream } from "@prisma/client";
+import { useForm } from "react-hook-form";
+import useMutation from "@libs/client/useMutation";
+import useUser from "@libs/client/useUser";
+import Message from "@components/message";
 
+interface IStreamWithMsg {
+  message: string;
+  user: {
+    id: number;
+    avatar?: string;
+  };
+}
+interface IStreamWithMsgs extends Stream {
+  messages: IStreamWithMsg[];
+}
 interface IStreamResponse {
   ok: boolean;
-  stream: Stream;
+  stream: IStreamWithMsgs;
+}
+interface IMsgForm {
+  message: string;
 }
 
 const Stream: NextPage = () => {
   const router = useRouter();
-  const { data } = useSWR<IStreamResponse>(
-    router.query.id ? `/api/streams/${router.query.id}` : null
+  const { user } = useUser();
+  const { register, handleSubmit, reset } = useForm<IMsgForm>();
+  const { data, mutate } = useSWR<IStreamResponse>(
+    router.query.id ? `/api/streams/${router.query.id}` : null,
+    {
+      refreshInterval: 1000,
+    }
   );
+  const [sendMessage, { loading, data: msgData }] = useMutation(
+    `/api/streams/${router.query.id}/messages`
+  );
+  const onValid = (form: IMsgForm) => {
+    if (loading) return;
+    reset();
+    mutate(
+      (prev) =>
+        prev &&
+        ({
+          ...prev,
+          stream: {
+            ...prev.stream,
+            messages: [
+              ...prev.stream.messages,
+              {
+                id: Date.now(),
+                message: form.message,
+                user: {
+                  ...user,
+                },
+              },
+            ],
+          },
+        } as any),
+      false // revalidation
+    );
+    sendMessage(form);
+  };
   return (
     <Layout title="Streaming" canGoBack>
       {data?.stream ? (
@@ -32,13 +82,21 @@ const Stream: NextPage = () => {
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Live Chat</h2>
             <div className="py-10 pb-16 h-[50vh] overflow-y-scroll  px-4 space-y-4">
-              <Message message="Hi how much are you selling them for?" />
-              <Message message="I want ￦20,000" reversed />
-              <Message message="미쳤어" />
+              {data?.stream?.messages?.map((message) => (
+                <Message
+                  key={message.id}
+                  message={message.message}
+                  reversed={message.user.id === user?.id ? true : false}
+                />
+              ))}
             </div>
             <div className="fixed py-2 bg-white  bottom-0 inset-x-0">
-              <div className="flex relative max-w-md items-center  w-full mx-auto">
+              <form
+                onSubmit={handleSubmit(onValid)}
+                className="flex relative max-w-md items-center  w-full mx-auto"
+              >
                 <input
+                  {...register("message", { required: true })}
                   type="text"
                   className="shadow-sm rounded-full w-full border-gray-300 focus:ring-orange-500 focus:outline-none pr-12 focus:border-orange-500"
                 />
@@ -47,7 +105,7 @@ const Stream: NextPage = () => {
                     &rarr;
                   </button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>
