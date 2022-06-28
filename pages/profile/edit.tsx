@@ -102,7 +102,8 @@ const EditProfile: NextPage = () => {
         ) : null}
         <Button
           onClick={() => clearErrors()}
-          text={loading ? "Loading..." : "Update profile"}
+          loading={loading}
+          text="Update profile"
         />
       </form>
     </Layout>

@@ -96,36 +96,45 @@ const Enter: NextPage = () => {
               </button>
             </div>
           </div>
-          {data?.ok ?
+          {data?.ok ? (
             <>
-              <form onSubmit={tokenSubmit(onTokenValid)} className="flex flex-col mt-8 space-y-4">
+              <form
+                onSubmit={tokenSubmit(onTokenValid)}
+                className="flex flex-col mt-8 space-y-4"
+              >
                 <Input
                   register={tokenRegister("token", {
-                    required: true
+                    required: true,
                   })}
                   name="token"
                   label="Confirmation TOKEN"
                   type="number"
                   required
                 />
-                <Button text={submitting? "Loading Token Loading" : "Confirm Token"} />
+                <Button text={submitting ? "Loading Token" : "Confirm Token"} />
               </form>
             </>
-          :
+          ) : (
             <>
-              <form onSubmit={handleSubmit(onValid, onInValid)} className="flex flex-col mt-8 space-y-4">
+              <form
+                onSubmit={handleSubmit(onValid, onInValid)}
+                className="flex flex-col mt-8 space-y-4"
+              >
                 {method === "email" ? (
                   <Input
                     register={register("email", {
-                      required: true
+                      required: true,
                     })}
-                    name="email" label="Email address" type="email" required
+                    name="email"
+                    label="Email address"
+                    type="email"
+                    required
                   />
                 ) : null}
                 {method === "phone" ? (
                   <Input
                     register={register("phone", {
-                      required: true
+                      required: true,
                     })}
                     name="phone"
                     label="Phone number"
@@ -134,13 +143,15 @@ const Enter: NextPage = () => {
                     required
                   />
                 ) : null}
-                {method === "email" ? <Button text={submitting? "Loading" : "Get login link"} /> : null}
+                {method === "email" ? (
+                  <Button loading={submitting} text="Get login link" />
+                ) : null}
                 {method === "phone" ? (
-                  <Button text={submitting? "Loading" : "Get one-time password"} />
+                  <Button loading={submitting} text="Get one-time password" />
                 ) : null}
               </form>
             </>
-          }
+          )}
           <div className="mt-8">
             <div className="relative">
               <div className="absolute w-full border-t border-gray-300" />
