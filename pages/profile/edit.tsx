@@ -40,7 +40,7 @@ const EditProfile: NextPage = () => {
     if (user?.email) setValue("email", user.email);
     if (user?.phone) setValue("phone", user.phone);
     if (user?.name && user?.name !== "Anonymous") setValue("name", user.name);
-    if (user?.avatar) setAvatarPreview(cfimg(user?.avatar));
+    if (user?.avatar) setAvatarPreview(cfimg(user?.avatar, "avatar"));
   }, [user]);
   const [editProfile, { data, loading }] =
     useMutation<IProfileResponse>(`/api/users/me`);

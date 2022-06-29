@@ -36,7 +36,7 @@ const Profile: NextPage = () => {
         <div className="flex items-center mt-4 space-x-3">
           {user?.avatar ? (
             <img
-              src={cfimg(user?.avatar)}
+              src={cfimg(user?.avatar, "avatar")}
               alt="Profile image"
               className="w-16 h-16 rounded-full"
             />
