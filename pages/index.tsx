@@ -23,19 +23,21 @@ const Home: NextPage = () => {
   return (
     <Layout title="홈" hasTabBar>
       <div className="flex flex-col space-y-5 divide-y">
-        {data ?
+        {data ? (
           data?.products?.map((product) => (
             <Item
               id={product.id}
               key={product.id}
               title={product.name}
+              photo={product.imageUrl}
               price={product.price}
               comments={1}
               hearts={product._count.likes}
             />
           ))
-        : <p>Loading...</p>
-        }
+        ) : (
+          <p>Loading...</p>
+        )}
         <FloatingButton href="/products/upload">
           <svg
             className="h-6 w-6"

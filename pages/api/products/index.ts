@@ -23,22 +23,22 @@ async function handler(
 	}
 	if(req.method === "POST") {
 		const {
-			body: { name, price, description },
-			session: { user }
-		} = req;
-		const product = await client.product.create({
-			data: {
-				name,
-				price: +price,
-				description,
-				imageUrl: "",
-				user: {
-					connect: {
-						id: user?.id,
-					}
-				}
-			}
-		});
+      body: { name, price, description, photoId },
+      session: { user },
+    } = req;
+    const product = await client.product.create({
+      data: {
+        name,
+        price: +price,
+        description,
+        imageUrl: photoId,
+        user: {
+          connect: {
+            id: user?.id,
+          },
+        },
+      },
+    });
 		const profile = await client.user.findUnique({
 			where: { id: req.session.user?.id }
 		})

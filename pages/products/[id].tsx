@@ -6,7 +6,7 @@ import useSWR, { mutate, useSWRConfig } from "swr";
 import Link from "next/link";
 import { Product, User } from "@prisma/client";
 import useMutation from "@libs/client/useMutation";
-import { cls } from "@libs/client/utils";
+import { cfimg, cls } from "@libs/client/utils";
 import useUser from "@libs/client/useUser";
 
 interface IProductWithUser extends Product {
@@ -23,24 +23,41 @@ const ItemDetail: NextPage = () => {
   const { user, isLoading } = useUser();
   const router = useRouter();
   const { mutate } = useSWRConfig();
-  const { data, mutate:boundMutate } = useSWR<IDetailResponse>(router.query.id ? `/api/products/${router.query.id}` : null)
-  const [ toggleLike ] = useMutation(`/api/products/${router.query.id}/like`);
+  const { data, mutate: boundMutate } = useSWR<IDetailResponse>(
+    router.query.id ? `/api/products/${router.query.id}` : null
+  );
+  const [toggleLike] = useMutation(`/api/products/${router.query.id}/like`);
   const onLikeClick = () => {
     toggleLike({});
-    if( !data ) return;
+    if (!data) return;
     boundMutate({ ...data, isLiked: !data.isLiked }, false); // mutate( value, revalidation )
     // mutate("/api/users/me", (prev:any) => ({ ok: !prev.ok }), false); // mutate(key, value, revalidation)
     // mutate(key) -- refetch
-  }
+  };
   return (
     <Layout canGoBack title="상품 정보">
       <div className="px-4  py-4">
         {data ? (
           <>
             <div className="mb-8">
-              <div className="h-96 bg-slate-300" />
+              {data?.product?.imageUrl ? (
+                <img
+                  src={cfimg(data?.product?.imageUrl)}
+                  alt={data.product.name}
+                />
+              ) : (
+                <div className="h-96 bg-slate-300" />
+              )}
               <div className="flex cursor-pointer py-3 border-t border-b items-center space-x-3">
-                <div className="w-12 h-12 rounded-full bg-slate-300" />
+                {data?.product?.user?.avatar ? (
+                  <img
+                    src={cfimg(data?.product?.user?.avatar, "avatar")}
+                    alt=""
+                    className="w-12 h-12 rounded-full"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-slate-300" />
+                )}
                 <div>
                   <p className="text-sm font-medium text-gray-700">
                     {data?.product?.user?.name}
