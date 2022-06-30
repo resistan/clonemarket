@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import { Review, User } from "@prisma/client";
 import { cfimg, cls } from "@libs/client/utils";
+import Image from "next/image";
 
 interface ReviewWithUser extends Review {
   createdBy: User;
@@ -35,9 +36,11 @@ const Profile: NextPage = () => {
       <div className="px-4">
         <div className="flex items-center mt-4 space-x-3">
           {user?.avatar ? (
-            <img
+            <Image
               src={cfimg(user?.avatar, "avatar")}
               alt="Profile image"
+              width={64}
+              height={64}
               className="w-16 h-16 rounded-full"
             />
           ) : (
@@ -46,11 +49,18 @@ const Profile: NextPage = () => {
           <div className="flex flex-col">
             <span className="font-medium text-gray-900">
               {user?.name} {user && user?.isAdmin && "(관리자)"}
-              <button onClick={onLogoutClick}>Log out</button>
             </span>
             <Link href="/profile/edit">
               <a className="text-sm text-gray-700">Edit profile &rarr;</a>
             </Link>
+          </div>
+          <div className="flex-1 text-right">
+            <button
+              onClick={onLogoutClick}
+              className="bg-gray-100 rounded-md p-2"
+            >
+              Log out
+            </button>
           </div>
         </div>
         <div className="mt-10 flex justify-around">

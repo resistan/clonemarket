@@ -5,6 +5,9 @@ import Layout from "@components/layout";
 import useUser from "@libs/client/useUser";
 import useSWR from "swr";
 import { Product } from "@prisma/client";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import PageNav from "@components/paginav";
 
 export interface IProductList extends Product {
   _count: {
@@ -14,27 +17,37 @@ export interface IProductList extends Product {
 interface IProductResponse {
   ok: boolean;
   products: IProductList[];
+  maxPage: number;
 }
 
 const Home: NextPage = () => {
   const { user, isLoading } = useUser();
-  const { data } = useSWR<IProductResponse>("/api/products")
+  const router = useRouter();
+  const { page: callPage } = router.query;
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    if (callPage) setPage(callPage ? +callPage : 1);
+  }, [callPage]);
+  const { data } = useSWR<IProductResponse>(`/api/products?page=${page}`);
   // console.log(data)
   return (
     <Layout title="홈" hasTabBar>
       <div className="flex flex-col space-y-5 divide-y">
         {data ? (
-          data?.products?.map((product) => (
-            <Item
-              id={product.id}
-              key={product.id}
-              title={product.name}
-              photo={product.imageUrl}
-              price={product.price}
-              comments={1}
-              hearts={product._count.likes}
-            />
-          ))
+          <>
+            {data?.products?.map((product) => (
+              <Item
+                id={product.id}
+                key={product.id}
+                title={product.name}
+                photo={product.imageUrl}
+                price={product.price}
+                comments={1}
+                hearts={product._count.likes}
+              />
+            ))}
+            <PageNav maxData={data?.maxPage} currentPage={page} />
+          </>
         ) : (
           <p>Loading...</p>
         )}

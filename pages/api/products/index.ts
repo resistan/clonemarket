@@ -7,19 +7,32 @@ async function handler(
 	req:NextApiRequest, res:NextApiResponse<IResponseType>
 ){
 	if(req.method === "GET") {
-		const products = await client.product.findMany({
-			include: {
-				_count: {
-					select: {
-						likes: true
-					}
-				}
-			}
-		});
-		res.json({
-			ok: true,
-			products
-		})
+		const {
+      query: { page },
+    } = req;
+    const pageSize = 10;
+    const currentPage = +page - 1;
+    const totalRecord = await client.stream.count();
+    const maxPage = Math.ceil(totalRecord / pageSize);
+    const products = await client.product.findMany({
+      take: 10,
+      skip: currentPage * pageSize,
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        _count: {
+          select: {
+            likes: true,
+          },
+        },
+      },
+    });
+    res.json({
+      ok: true,
+      products,
+      maxPage,
+    });
 	}
 	if(req.method === "POST") {
 		const {

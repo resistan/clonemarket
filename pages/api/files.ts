@@ -7,9 +7,9 @@ async function handler(
   req: NextApiRequest,
   res: NextApiResponse<IResponseType>
 ) {
-  const response = await (
+  const response = await(
     await fetch(
-      `https://api.cloudflare.com/client/v4/accounts/${process.env.CF_IMAGES_ACCOUNT}/images/v2/direct_upload `,
+      `https://api.cloudflare.com/client/v4/accounts/${process.env.CF_ACCOUNT}/images/v2/direct_upload `,
       {
         method: "POST",
         headers: {
