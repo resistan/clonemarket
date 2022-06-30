@@ -168,6 +168,9 @@ model Stream {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int
   messages    Message[]
+  cfId        String
+  cfUrl       String
+  cfKey       String
 }
 
 model Message {

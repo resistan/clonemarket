@@ -69,7 +69,18 @@ const Stream: NextPage = () => {
     <Layout title="Streaming" canGoBack>
       {data?.stream ? (
         <div className="py-10 px-4  space-y-4">
-          <div className="w-full rounded-md shadow-sm bg-slate-300 aspect-video" />
+          {data?.stream?.cfId ? (
+            <iframe
+              src={`https://iframe.videodelivery.net/${data?.stream?.cfId}`}
+              className="border-0 w-full aspect-video"
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+              allowFullScreen={true}
+            ></iframe>
+          ) : (
+            <div className="w-full rounded-md shadow-sm bg-slate-300 aspect-video flex items-center justify-center">
+              <p>Video / Streaming not found.</p>
+            </div>
+          )}
           <div className="mt-5">
             <h1 className="text-3xl font-bold text-gray-900">
               {data?.stream?.name}
@@ -78,6 +89,11 @@ const Stream: NextPage = () => {
               ${data?.stream?.price}
             </span>
             <p className=" my-6 text-gray-700">{data?.stream?.description}</p>
+            <div className="bg-orange-300 p-5 rounded-md flex flex-col space-y-3 overflow-scroll">
+              <span>Stream Keys (secret)</span>
+              <span>URL: {data?.stream?.cfUrl}</span>
+              <span>Key: {data?.stream?.cfKey}</span>
+            </div>
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Live Chat</h2>
@@ -110,7 +126,7 @@ const Stream: NextPage = () => {
           </div>
         </div>
       ) : (
-        <p className="text-center my-20">Invalid access</p>
+        <p className="text-center my-20">Something error</p>
       )}
     </Layout>
   );

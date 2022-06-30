@@ -7,6 +7,7 @@ import { Stream } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import PageNav from "@components/paginav";
+import Image from "next/image";
 
 interface IStreamListResponse {
   ok: boolean;
@@ -21,7 +22,9 @@ const Live: NextPage = () => {
   useEffect(() => {
     if (callPage) setPage(callPage ? +callPage : 1);
   }, [callPage]);
-  const { data } = useSWR<IStreamListResponse>(`/api/streams?page=${page}`);
+  const { data, error } = useSWR<IStreamListResponse>(
+    `/api/streams?page=${page}`
+  );
   // console.log(data?.maxPage);
   return (
     <Layout hasTabBar title="라이브">
@@ -31,7 +34,18 @@ const Live: NextPage = () => {
             {data?.streams.map((stream) => (
               <Link key={stream.id} href={`/streams/${stream.id}`}>
                 <a className="pt-4 block  px-4">
-                  <div className="w-full rounded-md shadow-sm bg-slate-300 aspect-video" />
+                  {/* <div className="w-full rounded-md shadow-sm bg-slate-300 aspect-video" /> */}
+                  <div className="relative h-[270px] object-cover">
+                    <Image
+                      // src={`https://videodelivery.net/${stream.cfId}/thumbnails/thumbnail.jpg`}
+                      src={
+                        "https://videodelivery.net/5d5bc37ffcf54c9b82e996823bffbb81/thumbnails/thumbnail.jpg"
+                      }
+                      alt="live thumbnail"
+                      layout="fill"
+                      className="w-full rounded-md shadow-sm bg-slate-300 aspect-video"
+                    />
+                  </div>
                   <h1 className="text-2xl mt-2 font-bold text-gray-900">
                     {stream.name}
                   </h1>
@@ -41,7 +55,7 @@ const Live: NextPage = () => {
             <PageNav maxData={data?.maxPage} currentPage={page} />
           </>
         ) : (
-          <p>Data not found</p>
+          <p>{error ? error : "Loading..."}</p>
         )}
         <FloatingButton href="/streams/create">
           <svg

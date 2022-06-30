@@ -34,6 +34,11 @@ async function handler(
       error: "404",
     });
   }
+  const isOwner = stream?.userId === user?.id;
+  if (stream && !isOwner) {
+    stream.cfKey = "";
+    stream.cfUrl = "";
+  }
   res.json({
     ok: true,
     stream,

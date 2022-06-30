@@ -36,17 +36,22 @@ const Create: NextPage = () => {
 
   return (
     <Layout canGoBack title="Go Live">
+      <h1 className="text-red-400 text-xl text-center py-10">
+        You can't create live streaiming!
+      </h1>
       <form onSubmit={handleSubmit(onValid)} className="space-y-4 py-10 px-4">
         <Input
-          register={register("name", { required: true })}
+          register={register("name", { disabled: true })}
           required
+          disabled
           label="Name"
           name="name"
           type="text"
         />
         <Input
-          register={register("price", { required: true, valueAsNumber: true })}
+          register={register("price", { disabled: true, valueAsNumber: true })}
           required
+          disabled
           label="Price"
           placeholder="0.00"
           name="price"
@@ -54,11 +59,12 @@ const Create: NextPage = () => {
           kind="price"
         />
         <TextArea
-          register={register("description", { required: true })}
+          register={register("description", { disabled: true })}
+          disabled
           name="description"
           label="Description"
         />
-        <Button loading={loading} text="Go live" />
+        <Button disabled loading={loading} text="Go live" />
       </form>
     </Layout>
   );
