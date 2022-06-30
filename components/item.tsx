@@ -1,4 +1,5 @@
-import { cfimg } from "@libs/client/utils";
+import { cfimg, cfimgLoader } from "@libs/client/utils";
+import Image from "next/image";
 import Link from "next/link";
 
 interface ItemProps {
@@ -10,15 +11,24 @@ interface ItemProps {
   hearts: number;
 }
 
-export default function Item({ title, price, photo, comments, hearts, id }: ItemProps) {
+export default function Item({
+  title,
+  price,
+  photo,
+  comments,
+  hearts,
+  id,
+}: ItemProps) {
   return (
     <Link href={`/products/${id}`}>
       <a className="flex px-4 pt-5 cursor-pointer justify-between">
         <div className="flex space-x-4">
           {photo ? (
-            <img
+            <Image
               src={cfimg(photo, "avatar")}
               alt={title}
+              width={80}
+              height={80}
               className="w-20 h-20 rounded-md"
             />
           ) : (
