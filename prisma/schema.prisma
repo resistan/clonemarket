@@ -14,27 +14,30 @@ datasource db {
 
 // user
 model User {
-  id              Int         @id @default(autoincrement())
-  phone           String?     @unique
-  email           String?     @unique
+  id              Int           @id @default(autoincrement())
+  phone           String?       @unique
+  email           String?       @unique
   name            String
   avatar          String?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  isAdmin         Boolean     @default(false)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  isAdmin         Boolean       @default(false)
   tokens          Token[]
   products        Product[]
   posts           Post[]
   answers         Answer[]
   wonderings      Wondering[]
-  writtenReviews  Review[]    @relation(name: "writtenReviews")
-  recievedReviews Review[]    @relation(name: "recievedReviews")
+  writtenReviews  Review[]      @relation(name: "writtenReviews")
+  recievedReviews Review[]      @relation(name: "recievedReviews")
   likes           Likes[]
   sale            Sale[]
   purchase        Purchase[]
   records         Record[]
   streams         Stream[]
   messages        Message[]
+  buyChats        Chat[]        @relation(name: "buyChat")
+  sellChats       Chat[]        @relation(name: "sellChat")
+  chatMessages    ChatMessage[]
 }
 
 model Token {
@@ -69,10 +72,12 @@ model Product {
   name        String
   price       Int
   description String     @db.MediumText
+  status      Int        @default(0) // 1 = reserved, 2 = sold
   likes       Likes[]
   sale        Sale[]
   purchase    Purchase[]
   records     Record[]
+  chats       Chat[]
 }
 
 enum Kind {
@@ -182,4 +187,29 @@ model Message {
   message   String   @db.MediumText
   stream    Stream   @relation(fields: [streamId], references: [id], onDelete: Cascade)
   streamId  Int
+}
+
+model Chat {
+  id           Int           @id @default(autoincrement())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  buyer        User          @relation(name: "buyChat", fields: [buyerId], references: [id], onDelete: Cascade)
+  buyerId      Int
+  seller       User          @relation(name: "sellChat", fields: [sellerId], references: [id], onDelete: Cascade)
+  sellerId     Int
+  product      Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId    Int
+  status       String        @default("none") // none, reserved, cancelled, done
+  chatMessages ChatMessage[]
+}
+
+model ChatMessage {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  message   String   @db.MediumText
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId    Int
 }

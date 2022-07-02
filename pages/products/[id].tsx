@@ -4,7 +4,7 @@ import Layout from "@components/layout";
 import { useRouter } from "next/router";
 import useSWR, { mutate, useSWRConfig } from "swr";
 import Link from "next/link";
-import { Product, User } from "@prisma/client";
+import { Chat, Product, User } from "@prisma/client";
 import useMutation from "@libs/client/useMutation";
 import { cfimg, cls } from "@libs/client/utils";
 import useUser from "@libs/client/useUser";
@@ -18,6 +18,11 @@ interface IDetailResponse {
   product: IProductWithUser;
   relatedProducts: Product[];
   isLiked: boolean;
+}
+
+interface ICreatedResponse {
+  ok: boolean;
+  chat: Chat[];
 }
 
 const ItemDetail: NextPage = () => {
@@ -34,6 +39,16 @@ const ItemDetail: NextPage = () => {
     boundMutate({ ...data, isLiked: !data.isLiked }, false); // mutate( value, revalidation )
     // mutate("/api/users/me", (prev:any) => ({ ok: !prev.ok }), false); // mutate(key, value, revalidation)
     // mutate(key) -- refetch
+  };
+  const [createChat, { data: chatData, loading }] =
+    useMutation<ICreatedResponse>("/api/chat/");
+  const onOpenChat = () => {
+    createChat({ product: data?.product });
+    if (loading) return;
+    // console.log(chatData);
+    if (chatData && chatData.ok) {
+      router.push(`/chats/${chatData?.chat[0].id}`);
+    }
   };
   return (
     <Layout canGoBack title="상품 정보">
@@ -82,54 +97,68 @@ const ItemDetail: NextPage = () => {
                 </h1>
                 <span className="text-2xl block mt-3 text-gray-900">
                   ${data?.product?.price}
+                  {data?.product.status === 1 && (
+                    <span className="inline-block bg-orange-400 text-white text-sm p-1 ml-2 rounded-md">
+                      예약 중
+                    </span>
+                  )}
                 </span>
                 <p className=" my-6 text-gray-700">
                   {data?.product?.description}
                 </p>
                 <div className="flex items-center justify-between space-x-2">
-                  <Button large text="Talk to seller" />
-                  <button
-                    onClick={onLikeClick}
-                    className={cls(
-                      "p-3 rounded-md flex items-center justify-center",
-                      data?.isLiked
-                        ? "text-red-400 hover:bg-red-100 hover:text-red-500"
-                        : "text-gray-400 hover:bg-gray-100 hover:text-gray-500"
-                    )}
-                  >
-                    {data?.isLiked ? (
-                      <svg
-                        className="h-6 w-6"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
+                  {data?.product?.user?.id !== user?.id ? (
+                    <>
+                      <Button
+                        onClick={onOpenChat}
+                        large
+                        loading={loading}
+                        text="Talk to seller"
+                      />
+                      <button
+                        onClick={onLikeClick}
+                        className={cls(
+                          "p-3 rounded-md flex items-center justify-center",
+                          data?.isLiked
+                            ? "text-red-400 hover:bg-red-100 hover:text-red-500"
+                            : "text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+                        )}
                       >
-                        <title>관심 목록에서 삭제</title>
-                        <path
-                          fillRule="evenodd"
-                          d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    ) : (
-                      <svg
-                        className="h-6 w-6"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        aria-hidden="true"
-                      >
-                        <title>관심 목록에 추가</title>
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                        />
-                      </svg>
-                    )}
-                  </button>
+                        {data?.isLiked ? (
+                          <svg
+                            className="h-6 w-6"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <title>관심 목록에서 삭제</title>
+                            <path
+                              fillRule="evenodd"
+                              d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        ) : (
+                          <svg
+                            className="h-6 w-6"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                          >
+                            <title>관심 목록에 추가</title>
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                            />
+                          </svg>
+                        )}
+                      </button>
+                    </>
+                  ) : null}
                 </div>
               </div>
             </div>
