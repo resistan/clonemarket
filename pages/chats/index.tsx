@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import Layout from "@components/layout";
-import ChatList from "@components/chat";
 import useUser from "@libs/client/useUser";
 import useSWR from "swr";
 import { Chat } from "@prisma/client";
@@ -12,9 +11,11 @@ interface IChatProps extends Chat {
   id: number;
   buyer: {
     name: string;
+    avatar: string;
   };
   seller: {
     name: string;
+    avatar: string;
   };
 }
 interface IChatListProps {
