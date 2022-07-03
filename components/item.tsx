@@ -1,4 +1,4 @@
-import { cfimg, cfimgLoader } from "@libs/client/utils";
+import { cfimg } from "@libs/client/utils";
 import Image from "next/image";
 import Link from "next/link";
 

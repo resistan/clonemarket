@@ -27,7 +27,7 @@ async function handler(
   // });
   // console.log(product);
   let reservation;
-  if (contract.status === "none" || contract.status === "cancelled") {
+  if (contract?.status === "none" || contract?.status === "cancelled") {
     reservation = "reserved";
     await client.product.update({
       where: {
@@ -37,7 +37,7 @@ async function handler(
         status: 1,
       },
     });
-  } else if (contract.status === "reserved") {
+  } else if (contract?.status === "reserved") {
     reservation = "cancelled";
     await client.product.update({
       where: {

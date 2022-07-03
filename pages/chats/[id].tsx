@@ -6,35 +6,34 @@ import useUser from "@libs/client/useUser";
 import { useForm } from "react-hook-form";
 import useSWR from "swr";
 import useMutation from "@libs/client/useMutation";
-import { Chat } from "@prisma/client";
+import { Chat, Product, User } from "@prisma/client";
 import Image from "next/image";
 import { cfimg } from "@libs/client/utils";
 import Link from "next/link";
 
-interface IChatWithMsg {
+interface IProductInChat {
+  id: number;
+  name: string;
+  imageUrl: string;
+}
+interface IUserInChat {
+  id: number;
+  name: string;
+  avatar?: string;
+}
+interface IChatWithMsg extends Chat {
   message: string;
   id: number;
-  user: {
-    id: number;
-    avatar?: string;
-  };
-  buyer: {
-    id: number;
-    name: string;
-    avatar?: string;
-  };
-  seller: {
-    id: number;
-    name: string;
-    avatar?: string;
-  };
-  product: {
-    id: number;
-    name: string;
-    imageUrl: string;
-  };
+  user: IUserInChat;
 }
-interface IChatWithMsgs extends Chat {
+interface IChatWithMsgs {
+  sellerId: number;
+  buyerId: number;
+  productId: number;
+  buyer: User;
+  seller: User;
+  product: Product;
+  status: string;
   chatMessages: IChatWithMsg[];
 }
 interface IChatResponse {

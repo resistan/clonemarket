@@ -9,6 +9,7 @@ import useUser from "@libs/client/useUser";
 import Message from "@components/message";
 
 interface IStreamWithMsg {
+  id: number;
   message: string;
   user: {
     id: number;

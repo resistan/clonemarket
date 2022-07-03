@@ -12,6 +12,7 @@ import { resolve } from "path";
 // import Bs from "@components/bs-component";
 const Bs = dynamic(
   // import("@components/bs-component"), { ssr: false }
+  // @ts-ignore
   () =>
     // lazy loading
     new Promise((resolve) =>

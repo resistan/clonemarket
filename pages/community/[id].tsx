@@ -29,7 +29,7 @@ interface IPostResponse {
   isWonder: boolean;
 }
 interface IAnswerForm {
-  answer: string;
+  answer?: string;
 }
 interface IAnswerResponse {
   ok: boolean;
@@ -71,7 +71,7 @@ const CommunityPostDetail: NextPage = () => {
   };
   const { register, handleSubmit, reset } = useForm();
   const [sendAnswer, { loading: answerLoading, data: answerData }] =
-    useMutation(`/api/posts/${router.query.id}/answers`);
+    useMutation<IAnswerResponse>(`/api/posts/${router.query.id}/answers`);
   const onValid = (form: IAnswerForm) => {
     if (answerLoading) return;
     sendAnswer(form);
