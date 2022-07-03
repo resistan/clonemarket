@@ -10,6 +10,9 @@ export function middleware(req: NextRequest, ev: NextFetchEvent) {
     if (!req.url.includes("/enter") && !req.cookies.clonemarket) {
       return NextResponse.redirect("/enter");
     }
+    if (req.url.includes("/enter") && req.cookies.clonemarket) {
+      return NextResponse.redirect("/");
+    }
   }
   // console.log(req.geo?.country); // not work on localhost
 }
