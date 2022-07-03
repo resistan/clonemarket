@@ -26,7 +26,7 @@ interface IChatListProps {
 const Chats: NextPage = () => {
   const { user } = useUser();
   const { data } = useSWR<IChatListProps>("/api/chat");
-  console.log(data);
+  // console.log(data);
   return (
     <Layout hasTabBar title="채팅">
       <div className="divide-y-[1px] ">
