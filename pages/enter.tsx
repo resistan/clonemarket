@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Button from "@components/button";
 import Input from "@components/input";
 import Seo from "@components/seo";
@@ -7,7 +7,19 @@ import { useForm } from "react-hook-form";
 import { cls } from "@libs/client/utils";
 import useMutation from "@libs/client/useMutation";
 import { useRouter } from "next/router";
-import useUser from "@libs/client/useUser";
+import dynamic from "next/dynamic";
+import { resolve } from "path";
+// import Bs from "@components/bs-component";
+const Bs = dynamic(
+  // import("@components/bs-component"), { ssr: false }
+  () =>
+    // lazy loading
+    new Promise((resolve) =>
+      setTimeout(() => resolve(import("@components/bs-component")), 3000)
+    ),
+  // { ssr: false, loading: () => <span>Loading a big component</span> }
+  { ssr: false, suspense: true } // suspense from react
+);
 
 // validation
 // better errors(set, clear, display)
@@ -24,45 +36,49 @@ interface ITokenForm {
 }
 
 const Enter: NextPage = () => {
-  const { user, isLoading } = useUser();
   const router = useRouter();
-  const [enter, {loading, data, error}] = useMutation<IMutationResult>("/api/users/enter");
-  const [confirmToken, {loading:tokenLoading, data:tokenData, error:tokenError}] = useMutation<IMutationResult>("/api/users/confirm");
-  const pageTitle = "Enter to Carrot";
+
+  const [enter, { loading, data, error }] =
+    useMutation<IMutationResult>("/api/users/enter");
+  const [
+    confirmToken,
+    { loading: tokenLoading, data: tokenData, error: tokenError },
+  ] = useMutation<IMutationResult>("/api/users/confirm");
   const [submitting, setSubmitting] = useState(false);
   const { register, reset, handleSubmit } = useForm<IEnterInfo>();
-  const { register:tokenRegister, handleSubmit:tokenSubmit } = useForm<ITokenForm>();
+  const { register: tokenRegister, handleSubmit: tokenSubmit } =
+    useForm<ITokenForm>();
   const [method, setMethod] = useState<"email" | "phone">("email");
-
-  if(user) router.replace("/");
 
   const onEmailClick = () => {
     reset();
     setMethod("email");
-  }
+  };
   const onPhoneClick = () => {
     reset();
     setMethod("phone");
-  }
+  };
   const onValid = (validForm: IEnterInfo) => {
-    if(loading) return;
+    if (loading) return;
     enter(validForm);
     // console.log(loading, data, error)
-	}
-	const onInValid = (data: any) => {
-		// console.log(data)
-	}
+  };
+  const onInValid = (data: any) => {
+    // console.log(data)
+  };
   const onTokenValid = (validForm: ITokenForm) => {
-    if(tokenLoading) return;
+    if (tokenLoading) return;
     confirmToken(validForm);
-	}
+  };
 
   useEffect(() => {
-    if(tokenData?.ok) {
+    if (tokenData?.ok) {
       router.push("/");
     }
   }, [tokenData, router]);
   // console.log(watch())
+
+  const pageTitle = "Enter to Carrot";
   return (
     <>
       <Seo title={pageTitle} />
@@ -132,16 +148,21 @@ const Enter: NextPage = () => {
                   />
                 ) : null}
                 {method === "phone" ? (
-                  <Input
-                    register={register("phone", {
-                      required: true,
-                    })}
-                    name="phone"
-                    label="Phone number"
-                    type="number"
-                    kind="phone"
-                    required
-                  />
+                  <>
+                    <Suspense fallback="Loading something big">
+                      <Bs />
+                    </Suspense>
+                    <Input
+                      register={register("phone", {
+                        required: true,
+                      })}
+                      name="phone"
+                      label="Phone number"
+                      type="number"
+                      kind="phone"
+                      required
+                    />
+                  </>
                 ) : null}
                 {method === "email" ? (
                   <Button loading={submitting} text="Get login link" />

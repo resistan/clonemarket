@@ -29,7 +29,9 @@ export default function useUser() {
   const publicPages: string[] = ["/enter"];
   const checkPages: boolean = publicPages.includes(router.pathname);
 
-  const { data, error } = useSWR("/api/users/me"); // fetcher moved to _app.js
+  const { data, error } = useSWR(
+    typeof window === "undefined" ? null : "/api/users/me"
+  ); // fetcher moved to _app.js
   useEffect(() => {
     if (data && !data.ok && !checkPages) {
       router.replace("/enter");
