@@ -3,7 +3,7 @@ import FloatingButton from "@components/floating-button";
 import Item from "@components/item";
 import Layout from "@components/layout";
 import useUser from "@libs/client/useUser";
-import useSWR from "swr";
+import useSWR, { SWRConfig } from "swr";
 import { Product } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -21,7 +21,7 @@ interface IProductResponse {
   maxPage: number;
 }
 
-const Home: NextPage<{ products: IProductList[] }> = ({ products }) => {
+const Home: NextPage = () => {
   const { user, isLoading } = useUser();
   const router = useRouter();
   const { page: callPage } = router.query;
@@ -29,12 +29,12 @@ const Home: NextPage<{ products: IProductList[] }> = ({ products }) => {
   useEffect(() => {
     if (callPage) setPage(callPage ? +callPage : 1);
   }, [callPage]);
-  // const { data } = useSWR<IProductResponse>(`/api/products?page=${page}`);
-  // console.log(data)
+  const { data } = useSWR<IProductResponse>(`/api/products?page=${page}`);
+  // console.log(data);
   return (
     <Layout title="홈" hasTabBar>
       <div className="flex flex-col space-y-5 divide-y">
-        {/* {data ? (
+        {data ? (
           <>
             {data?.products?.map((product) => (
               <Item
@@ -51,19 +51,7 @@ const Home: NextPage<{ products: IProductList[] }> = ({ products }) => {
           </>
         ) : (
           <p>Loading...</p>
-        )} */}
-        {/* with getServerSideProps */}
-        {products?.map((product) => (
-          <Item
-            id={product.id}
-            key={product.id}
-            title={product.name}
-            photo={product.imageUrl}
-            price={product.price}
-            comments={1}
-            hearts={product._count?.likes}
-          />
-        ))}
+        )}
         <FloatingButton href="/products/upload">
           <svg
             className="h-6 w-6"
@@ -85,6 +73,24 @@ const Home: NextPage<{ products: IProductList[] }> = ({ products }) => {
       </div>
     </Layout>
   );
+};;
+
+const Page: NextPage<{ products: IProductList[] }> = ({ products }) => {
+  return (
+    <SWRConfig
+      // set initialized cache
+      value={{
+        fallback: {
+          "/api/products": {
+            ok: true,
+            products,
+          },
+        },
+      }}
+    >
+      <Home />
+    </SWRConfig>
+  );
 };
 
 export async function getServerSideProps() {
@@ -97,4 +103,4 @@ export async function getServerSideProps() {
   };
 }
 
-export default Home;
+export default Page;
