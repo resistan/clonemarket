@@ -1,4 +1,6 @@
 import Document, { Head, Html, Main, NextScript } from "next/document";
+
+/* nextjs supports google fonts  */
 class CustomDocument extends Document {
   render(): JSX.Element {
     return (

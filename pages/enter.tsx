@@ -9,6 +9,7 @@ import useMutation from "@libs/client/useMutation";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import { resolve } from "path";
+import Script from "next/script";
 // import Bs from "@components/bs-component";
 const Bs = dynamic(
   // import("@components/bs-component"), { ssr: false }
@@ -212,6 +213,11 @@ const Enter: NextPage = () => {
           </div>
         </div>
       </div>
+      <Script
+        src="https://developers.kakao.com/sdk/js/kakao.js"
+        strategy="afterInteractive"
+        onLoad={() => {}}
+      />
     </>
   );
 };
