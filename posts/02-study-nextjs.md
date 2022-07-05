@@ -7,3 +7,9 @@ category: study
 # Study nextjs
 
 It's very hard for beginners.
+
+- reactjs
+- recoil
+- swr or react-query
+- nextjs
+- web-component

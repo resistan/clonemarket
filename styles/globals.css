@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.blog-post-content h1 {
+	@apply text-red-500 mt-2 mb-5 text-lg font-semibold;
+}
+
+.blog-post-content p {
+	@apply my-1 text-gray-500
+}
+
+.blog-post-content ul {
+	@apply pl-10 list-disc
+}
+
+.blog-post-content 10 {
+	/* @apply mb-1 text-gray-500 */
+}
