@@ -8,6 +8,7 @@ import { Product } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import PageNav from "@components/paginav";
+import client from "@libs/server/prismaClient";
 
 export interface IProductList extends Product {
   _count: {
@@ -20,7 +21,7 @@ interface IProductResponse {
   maxPage: number;
 }
 
-const Home: NextPage = () => {
+const Home: NextPage<{ products: IProductList[] }> = ({ products }) => {
   const { user, isLoading } = useUser();
   const router = useRouter();
   const { page: callPage } = router.query;
@@ -28,12 +29,12 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (callPage) setPage(callPage ? +callPage : 1);
   }, [callPage]);
-  const { data } = useSWR<IProductResponse>(`/api/products?page=${page}`);
+  // const { data } = useSWR<IProductResponse>(`/api/products?page=${page}`);
   // console.log(data)
   return (
     <Layout title="홈" hasTabBar>
       <div className="flex flex-col space-y-5 divide-y">
-        {data ? (
+        {/* {data ? (
           <>
             {data?.products?.map((product) => (
               <Item
@@ -50,7 +51,19 @@ const Home: NextPage = () => {
           </>
         ) : (
           <p>Loading...</p>
-        )}
+        )} */}
+        {/* with getServerSideProps */}
+        {products?.map((product) => (
+          <Item
+            id={product.id}
+            key={product.id}
+            title={product.name}
+            photo={product.imageUrl}
+            price={product.price}
+            comments={1}
+            hearts={product._count?.likes}
+          />
+        ))}
         <FloatingButton href="/products/upload">
           <svg
             className="h-6 w-6"
@@ -73,5 +86,15 @@ const Home: NextPage = () => {
     </Layout>
   );
 };
+
+export async function getServerSideProps() {
+  const products = await client.product.findMany({});
+  // console.log(products);
+  return {
+    props: {
+      products: JSON.parse(JSON.stringify(products)),
+    },
+  };
+}
 
 export default Home;
