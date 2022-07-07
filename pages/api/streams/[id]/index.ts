@@ -12,7 +12,7 @@ async function handler(
     session: { user },
   } = req;
   const stream = await client.stream.findUnique({
-    where: { id: +id.toString() },
+    where: { id: +id!.toString() },
     include: {
       messages: {
         select: {

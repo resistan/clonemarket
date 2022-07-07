@@ -12,7 +12,7 @@ async function handler(
     session: { user },
   } = req;
   const post = await client.post.findUnique({
-    where: { id: +id.toString() },
+    where: { id: +id!.toString() },
     include: {
       user: {
         select: {

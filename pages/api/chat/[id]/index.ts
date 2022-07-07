@@ -12,7 +12,7 @@ async function handler(
     session: { user },
   } = req;
   const chat = await client.chat.findUnique({
-    where: { id: +id.toString() },
+    where: { id: +id!.toString() },
     include: {
       chatMessages: {
         select: {

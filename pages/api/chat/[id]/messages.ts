@@ -17,7 +17,7 @@ async function handler(
       message: body.message,
       chat: {
         connect: {
-          id: +id.toString(),
+          id: +id!.toString(),
         },
       },
       user: {

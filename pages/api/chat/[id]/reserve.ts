@@ -12,7 +12,7 @@ async function handler(
   } = req;
   const contract = await client.chat.findUnique({
     where: {
-      id: +id.toString(),
+      id: +id!.toString(),
     },
     select: {
       productId: true,
@@ -50,7 +50,7 @@ async function handler(
   }
   await client.chat.update({
     where: {
-      id: +id.toString(),
+      id: +id!.toString(),
     },
     data: {
       status: reservation,

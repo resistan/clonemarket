@@ -8,7 +8,7 @@ async function handler(
 ){
 	const { query: {id}, session: {user} } = req;
 	const product = await client.product.findUnique({
-    where: { id: +id.toString() },
+    where: { id: +id!.toString() },
     include: {
       user: {
         select: {

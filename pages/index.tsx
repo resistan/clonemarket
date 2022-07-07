@@ -73,7 +73,7 @@ const Home: NextPage = () => {
       </div>
     </Layout>
   );
-};;
+};
 
 const Page: NextPage<{ products: IProductList[] }> = ({ products }) => {
   return (
@@ -95,6 +95,7 @@ const Page: NextPage<{ products: IProductList[] }> = ({ products }) => {
 
 export async function getServerSideProps() {
   const products = await client.product.findMany({});
+  // await new Promise((resolve) => setTimeout(resolve, 3000));
   // console.log(products);
   return {
     props: {

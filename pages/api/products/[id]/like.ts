@@ -9,12 +9,12 @@ async function handler(
 	const { query: { id }, session: { user } } = req;
 	const alreadyExists = await client.likes.findFirst({
     where: {
-      productId: +id.toString(),
+      productId: +id!.toString(),
       userId: user?.id,
     },
   });
-	const product = await client.product.findUnique({
-    where: { id: +id.toString() },
+  const product = await client.product.findUnique({
+    where: { id: +id!.toString() },
   });
   if (!product) {
     res.json({
@@ -46,7 +46,7 @@ async function handler(
         },
         product: {
           connect: {
-            id: +id.toString(),
+            id: +id!.toString(),
           },
         },
       },

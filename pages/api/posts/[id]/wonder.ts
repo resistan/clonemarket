@@ -12,7 +12,7 @@ async function handler(
     session: { user },
   } = req;
   const post = await client.post.findUnique({
-    where: { id: +id.toString() },
+    where: { id: +id!.toString() },
   });
   if (!post) {
     res.json({
@@ -22,7 +22,7 @@ async function handler(
   }
   const alreadyExists = await client.wondering.findFirst({
     where: {
-      postId: +id.toString(),
+      postId: +id!.toString(),
       userId: user?.id,
     },
   });
@@ -45,7 +45,7 @@ async function handler(
         },
         post: {
           connect: {
-            id: +id.toString(),
+            id: +id!.toString(),
           },
         },
       },

@@ -13,7 +13,7 @@ async function handler(
     query: { id },
   } = req;
   const post = await client.post.findUnique({
-    where: { id: +id.toString() },
+    where: { id: +id!.toString() },
   });
   if (!post) {
     res.json({
@@ -26,7 +26,7 @@ async function handler(
       answer,
       post: {
         connect: {
-          id: +id.toString(),
+          id: +id!.toString(),
         },
       },
       user: {

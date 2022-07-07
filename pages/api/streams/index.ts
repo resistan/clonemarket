@@ -12,7 +12,7 @@ async function handler(
       query: { page },
     } = req;
     const pageSize = 10;
-    const currentPage = +page - 1;
+    const currentPage = page ? +page - 1 : 0;
     const totalRecord = await client.stream.count();
     const maxPage = Math.ceil(totalRecord / pageSize);
     const streams = await client.stream.findMany({

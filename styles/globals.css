@@ -14,6 +14,6 @@
 	@apply pl-10 list-disc
 }
 
-.blog-post-content 10 {
+.blog-post-content li {
 	/* @apply mb-1 text-gray-500 */
 }

@@ -27,7 +27,7 @@ interface IMsgForm {
   message: string;
 }
 
-const Stream: NextPage = () => {
+const StreamDetail: NextPage = () => {
   const router = useRouter();
   const { user } = useUser();
   const { register, handleSubmit, reset } = useForm<IMsgForm>();
@@ -133,4 +133,4 @@ const Stream: NextPage = () => {
   );
 };
 
-export default Stream;
+export default StreamDetail;
