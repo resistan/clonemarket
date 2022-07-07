@@ -113,6 +113,12 @@ export async function getStaticProps() {
   const posts = await client.post.findMany({
     include: {
       user: true,
+      _count: {
+        select: {
+          wonderings: true,
+          answers: true,
+        },
+      },
     },
   });
   return {

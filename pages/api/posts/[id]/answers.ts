@@ -36,6 +36,7 @@ async function handler(
       },
     },
   });
+  await res.revalidate(`/community/${id}`);
   res.status(200).json({
     ok: true,
     answer: newAnswer,

@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import Layout from "@components/layout";
 import TextArea from "@components/textarea";
 import useUser from "@libs/client/useUser";
@@ -10,6 +10,7 @@ import Link from "next/link";
 import { cls } from "@libs/client/utils";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
+import client from "@libs/server/prismaClient";
 
 interface IAnswerWithUser extends Answer {
   user: User;
@@ -36,7 +37,7 @@ interface IAnswerResponse {
   answer: Answer;
 }
 
-const CommunityPostDetail: NextPage = () => {
+const CommunityPostDetail: NextPage<IPostResponse> = ({ post }) => {
   const { user, isLoading } = useUser();
   const router = useRouter();
   const { data, mutate } = useSWR<IPostResponse>(
@@ -83,6 +84,13 @@ const CommunityPostDetail: NextPage = () => {
     }
   }, [answerData, reset, mutate]);
   // console.log(data);
+  if (router.isFallback) {
+    return (
+      <Layout canGoBack title="질문 불러오는 중">
+        <h1>Loading...</h1>
+      </Layout>
+    );
+  }
   return (
     <Layout canGoBack title="동네질문">
       {data?.post ? (
@@ -184,6 +192,59 @@ const CommunityPostDetail: NextPage = () => {
       ) : null}
     </Layout>
   );
-};;
+};
+
+export const getStaticPaths: GetStaticPaths = () => {
+  return {
+    paths: [],
+    fallback: true,
+  };
+};
+export const getStaticProps: GetStaticProps = async (ctx) => {
+  if (!ctx?.params?.id) {
+    return {
+      props: {},
+    };
+  }
+  const post = await client.post.findUnique({
+    where: { id: +ctx.params.id.toString() },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          avatar: true,
+        },
+      },
+      answers: {
+        take: 10,
+        skip: 0,
+        select: {
+          answer: true,
+          id: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true,
+            },
+          },
+        },
+      },
+      _count: {
+        select: {
+          answers: true,
+          wonderings: true,
+        },
+      },
+    },
+  });
+  return {
+    props: {
+      post: JSON.parse(JSON.stringify(post)),
+    },
+    // revalidate: 20, // seconds -> API revalidate
+  };
+};
 
 export default CommunityPostDetail;
