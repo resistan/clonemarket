@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import { SWRConfig } from "swr";
 import useUser from "@libs/client/useUser";
 
+console.log("App is running");
 function MyApp({ Component, pageProps }: AppProps) {
   const { user } = useUser();
   return (
