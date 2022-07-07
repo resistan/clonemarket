@@ -3,7 +3,7 @@ import Link from "next/link";
 import Layout from "@components/layout";
 import useMutation from "@libs/client/useMutation";
 import useUser from "@libs/client/useUser";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter } from "next/router";
 import useSWR, { SWRConfig } from "swr";
 import { Review, User } from "@prisma/client";
@@ -63,7 +63,7 @@ const Reviews = () => {
   );
 };
 
-const Profile: NextPage = () => {
+const UserProfile = () => {
   const { user } = useUser();
   const router = useRouter();
   const [logoff, { data: loggedInData }] = useMutation("/api/users/logout");
@@ -76,37 +76,42 @@ const Profile: NextPage = () => {
     }
   }, [loggedInData, router]);
   return (
+    <div className="flex items-center mt-4 space-x-3">
+      {user?.avatar ? (
+        <Image
+          src={cfimg(user?.avatar, "avatar")}
+          alt="Profile image"
+          width={64}
+          height={64}
+          className="w-16 h-16 rounded-full"
+        />
+      ) : (
+        <div className="w-16 h-16 bg-slate-500 rounded-full" />
+      )}
+      <div className="flex flex-col">
+        <span className="font-medium text-gray-900">
+          {user?.name} {user?.isAdmin && "(관리자)"}
+        </span>
+        <Link href="/profile/edit">
+          <a className="text-sm text-gray-700">Edit profile &rarr;</a>
+        </Link>
+      </div>
+      <div className="flex-1 text-right">
+        <button onClick={onLogoutClick} className="bg-gray-100 rounded-md p-2">
+          Log out
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const Profile: NextPage = () => {
+  return (
     <Layout hasTabBar title="나의 캐럿">
       <div className="px-4">
-        <div className="flex items-center mt-4 space-x-3">
-          {user?.avatar ? (
-            <Image
-              src={cfimg(user?.avatar, "avatar")}
-              alt="Profile image"
-              width={64}
-              height={64}
-              className="w-16 h-16 rounded-full"
-            />
-          ) : (
-            <div className="w-16 h-16 bg-slate-500 rounded-full" />
-          )}
-          <div className="flex flex-col">
-            <span className="font-medium text-gray-900">
-              {user?.name} {user?.isAdmin && "(관리자)"}
-            </span>
-            <Link href="/profile/edit">
-              <a className="text-sm text-gray-700">Edit profile &rarr;</a>
-            </Link>
-          </div>
-          <div className="flex-1 text-right">
-            <button
-              onClick={onLogoutClick}
-              className="bg-gray-100 rounded-md p-2"
-            >
-              Log out
-            </button>
-          </div>
-        </div>
+        <Suspense fallback="Loading profile...">
+          <UserProfile />
+        </Suspense>
         <div className="mt-10 flex justify-around">
           <Link href="/profile/sold">
             <a className="flex flex-col items-center">
@@ -181,41 +186,51 @@ const Profile: NextPage = () => {
             </a>
           </Link>
         </div>
-        <Reviews />
+        <Suspense fallback="Loading reviews...">
+          <Reviews />
+        </Suspense>
       </div>
     </Layout>
   );
 };
 
-const Page: NextPage<{ profile: User }> = ({ profile }) => {
+// const Page: NextPage<{ profile: User }> = ({ profile }) => {
+//   return (
+//     <SWRConfig
+//       value={{
+//         fallback: {
+//           "/api/users/me": {
+//             ok: true,
+//             profile,
+//           },
+//         },
+//       }}
+//     >
+//       <Profile />
+//     </SWRConfig>
+//   );
+// };
+
+// export const getServerSideProps = withSsrSession(async function ({
+//   req,
+// }: NextPageContext) {
+//   // console.log(req?.session.user);
+//   const profile = await client.user.findUnique({
+//     where: { id: req?.session.user?.id },
+//   });
+//   return {
+//     props: {
+//       profile: JSON.parse(JSON.stringify(profile)),
+//     },
+//   };
+// });
+
+const Page: NextPage = () => {
   return (
-    <SWRConfig
-      value={{
-        fallback: {
-          "/api/users/me": {
-            ok: true,
-            profile,
-          },
-        },
-      }}
-    >
+    <SWRConfig value={{ suspense: true }}>
       <Profile />
     </SWRConfig>
   );
 };
-
-export const getServerSideProps = withSsrSession(async function ({
-  req,
-}: NextPageContext) {
-  // console.log(req?.session.user);
-  const profile = await client.user.findUnique({
-    where: { id: req?.session.user?.id },
-  });
-  return {
-    props: {
-      profile: JSON.parse(JSON.stringify(profile)),
-    },
-  };
-});
 
 export default Page;
