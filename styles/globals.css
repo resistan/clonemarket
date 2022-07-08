@@ -13,7 +13,3 @@
 .blog-post-content ul {
 	@apply pl-10 list-disc
 }
-
-.blog-post-content li {
-	/* @apply mb-1 text-gray-500 */
-}

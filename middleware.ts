@@ -12,13 +12,13 @@ export function middleware(req: NextRequest, ev: NextFetchEvent) {
       !req.nextUrl.pathname.startsWith("/enter") &&
       !req.cookies.get("clonemarket")
     ) {
-      return NextResponse.redirect("/enter");
+      return NextResponse.redirect(new URL("/enter", req.url));
     }
     if (
       !req.nextUrl.pathname.startsWith("/") &&
       req.cookies.get("clonemarket")
     ) {
-      return NextResponse.redirect("/");
+      return NextResponse.redirect(new URL("/", req.url));
     }
   }
   // console.log(req.geo?.country); // not work on localhost
