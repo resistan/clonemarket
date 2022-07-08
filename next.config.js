@@ -8,5 +8,8 @@ module.exports = {
   }, */
   images: {
     domains: ['imagedelivery.net','videodelivery.net']
-  }
+  },
+  // webpack(config) {
+  //   console.log(config);
+  // }
 }

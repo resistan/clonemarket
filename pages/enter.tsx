@@ -2,14 +2,13 @@ import type { NextPage } from "next";
 import React, { Suspense, useEffect, useState } from "react";
 import Button from "@components/button";
 import Input from "@components/input";
-import Seo from "@components/seo";
+import Seo from "@components/layout";
 import { useForm } from "react-hook-form";
 import { cls } from "@libs/client/utils";
 import useMutation from "@libs/client/useMutation";
 import { useRouter } from "next/router";
-import dynamic from "next/dynamic";
-import { resolve } from "path";
 import Script from "next/script";
+import dynamic from "next/dynamic";
 // import Bs from "@components/bs-component";
 const Bs = dynamic(
   // import("@components/bs-component"), { ssr: false }

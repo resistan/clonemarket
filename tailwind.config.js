@@ -1,3 +1,4 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     "./pages/**/*.{js,jsx,ts,tsx}",
@@ -8,4 +9,4 @@ module.exports = {
   },
   darkMode: "media", // class
   plugins: [require("@tailwindcss/forms")],
-};
+}
