@@ -2,13 +2,13 @@ import type { NextPage } from "next";
 import React, { Suspense, useEffect, useState } from "react";
 import Button from "@components/button";
 import Input from "@components/input";
-import Seo from "@components/layout";
 import { useForm } from "react-hook-form";
 import { cls } from "@libs/client/utils";
 import useMutation from "@libs/client/useMutation";
 import { useRouter } from "next/router";
 import Script from "next/script";
 import dynamic from "next/dynamic";
+import Head from "next/head";
 // import Bs from "@components/bs-component";
 const Bs = dynamic(
   // import("@components/bs-component"), { ssr: false }
@@ -82,7 +82,9 @@ const Enter: NextPage = () => {
   const pageTitle = "Enter to Carrot";
   return (
     <>
-      <Seo title={pageTitle} />
+      <Head>
+        <title>{pageTitle}</title>
+      </Head>
       <div className="mt-16 px-4">
         <h1 className="text-3xl font-bold text-center">{pageTitle}</h1>
         <div className="mt-12">
