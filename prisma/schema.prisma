@@ -59,6 +59,8 @@ model Review {
   createdFor   User     @relation(name: "recievedReviews", fields: [createdForId], references: [id], onDelete: Cascade)
   createdForId Int
   score        Int      @default(1)
+
+  @@index([createdById, createdForId])
 }
 
 // product
@@ -78,6 +80,8 @@ model Product {
   purchase    Purchase[]
   records     Record[]
   chats       Chat[]
+
+  @@index([userId])
 }
 
 enum Kind {
@@ -95,6 +99,8 @@ model Record {
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId Int
   kind      Kind
+
+  @@index([userId, productId])
 }
 
 model Sale {
@@ -105,6 +111,8 @@ model Sale {
   userId    Int
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId Int
+
+  @@index([userId, productId])
 }
 
 model Purchase {
@@ -115,6 +123,8 @@ model Purchase {
   userId    Int
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId Int
+
+  @@index([userId, productId])
 }
 
 model Likes {
@@ -125,6 +135,8 @@ model Likes {
   userId    Int
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId Int
+
+  @@index([userId, productId])
 }
 
 // community
@@ -139,6 +151,8 @@ model Post {
   wonderings Wondering[]
   latitude   Float?
   longitude  Float?
+
+  @@index([userId])
 }
 
 model Answer {
@@ -150,6 +164,8 @@ model Answer {
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    Int
   answer    String   @db.MediumText
+
+  @@index([userId, postId])
 }
 
 model Wondering {
@@ -160,6 +176,8 @@ model Wondering {
   userId    Int
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    Int
+
+  @@index([userId, postId])
 }
 
 // live streaming
@@ -176,6 +194,8 @@ model Stream {
   cfId        String
   cfUrl       String
   cfKey       String
+
+  @@index([userId])
 }
 
 model Message {
@@ -187,6 +207,8 @@ model Message {
   message   String   @db.MediumText
   stream    Stream   @relation(fields: [streamId], references: [id], onDelete: Cascade)
   streamId  Int
+
+  @@index([userId, streamId])
 }
 
 model Chat {
@@ -201,6 +223,8 @@ model Chat {
   productId    Int
   status       String        @default("none") // none, reserved, cancelled, done
   chatMessages ChatMessage[]
+  
+  @@index([buyerId, sellerId, productId])
 }
 
 model ChatMessage {
@@ -212,4 +236,6 @@ model ChatMessage {
   message   String   @db.MediumText
   chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId    Int
+
+  @@index([userId, chatId])
 }
