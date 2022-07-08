@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@components/button";
 import Input from "@components/input";
 import { useForm } from "react-hook-form";
@@ -9,18 +9,6 @@ import { useRouter } from "next/router";
 import Script from "next/script";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-// import Bs from "@components/bs-component";
-const Bs = dynamic(
-  // import("@components/bs-component"), { ssr: false }
-  // @ts-ignore
-  () =>
-    // lazy loading
-    new Promise((resolve) =>
-      setTimeout(() => resolve(import("@components/bs-component")), 3000)
-    ),
-  // { ssr: false, loading: () => <span>Loading a big component</span> }
-  { ssr: false, suspense: true } // suspense from react
-);
 
 // validation
 // better errors(set, clear, display)
@@ -151,21 +139,16 @@ const Enter: NextPage = () => {
                   />
                 ) : null}
                 {method === "phone" ? (
-                  <>
-                    <Suspense fallback="Loading something big">
-                      <Bs />
-                    </Suspense>
-                    <Input
-                      register={register("phone", {
-                        required: true,
-                      })}
-                      name="phone"
-                      label="Phone number"
-                      type="number"
-                      kind="phone"
-                      required
-                    />
-                  </>
+                  <Input
+                    register={register("phone", {
+                      required: true,
+                    })}
+                    name="phone"
+                    label="Phone number"
+                    type="number"
+                    kind="phone"
+                    required
+                  />
                 ) : null}
                 {method === "email" ? (
                   <Button loading={submitting} text="Get login link" />
